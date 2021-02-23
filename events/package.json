@@ -1,0 +1,15 @@
+{
+    "dependencies": {
+        "requests": "latest",
+        "docopt": "== 0.6.1",
+        "keyring": ">= 4.1.1"
+    },
+    "layer": {
+        "name": "layer-creation-python-layer",
+        "description": "contains dependencies of layer creation function",
+        "compatible-runtimes": [
+           "python3.6","python3.7","python3.8"
+        ],
+        "license-info": "MIT"
+    }
+}
