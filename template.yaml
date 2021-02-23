@@ -1,9 +1,21 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  sam-app
 
-  Sample SAM Template for sam-app
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: python-lambda-layer-creation
+    Description: This function faciliate creating lambda layers for python function.
+    Author: tuaph
+    # SPDX License Id, e.g., MIT, MIT-0, Apache-2.0. See https://spdx.org/licenses for more details
+    SpdxLicenseId: MIT
+    LicenseUrl: s3://tuaph-aws-case-support/serverless-application-repository/python-lambda-layer-creation/LICENSE
+    ReadmeUrl: s3://tuaph-aws-case-support/serverless-application-repository/python-lambda-layer-creation/README.md
+    Labels: ['lambda','lambdalayer','layer','python']
+    HomePageUrl: https://github.com/phan-anh-tuan/python-lambda-layer-creation
+    # Update the semantic version and run sam publish to publish a new version of your app
+    SemanticVersion: 0.0.9
+    # best practice is to use git tags for each release and link to the version tag as your source code URL
+    SourceCodeUrl: https://github.com/phan-anh-tuan/python-lambda-layer-creation
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -11,10 +23,36 @@ Globals:
     Timeout: 900
 
 Resources:
-  HelloWorldFunction:
+  LambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: function/
       Handler: app.lambda_handler
       Runtime: python3.7
- 
+      MemorySize: 1024
+      Role: 
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+
+  LambdaExecutionRole:
+    Description: Allow Lambda to connect function to publish lambda layers
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [lambda.amazonaws.com]
+          Action: sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: AllowPublishLambdaLayer
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'lambda:PublishLayerVersion'
+                Resource: '*'
