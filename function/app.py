@@ -20,9 +20,9 @@ def delete_folder(path):
     for f in os.listdir(path):
         if (os.path.isdir('/'.join([path, f]))):
             delete_folder('/'.join([path, f]))
-            os.rmdir(f)
+            os.rmdir('/'.join([path, f]))
         else:
-            os.remove(f)
+            os.remove('/'.join([path, f]))
 
 
 def write_to_file(path, lines):
